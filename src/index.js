@@ -18,9 +18,9 @@ const scene = {
   },
 
   update: function () {
-    // if (this.helloText.x > 1000) {
-    //   this.helloText.x = -200;
-    // }
+    if (this.helloText.x > 1000) {
+      this.helloText.x = -200;
+    }
 
     if (this.helloText.x < -200) {
       this.helloText.x = 1000;
