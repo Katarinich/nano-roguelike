@@ -1,6 +1,7 @@
-import level from './rooms/room_1';
-
 import { FLOOR, TILE_SIZE, WALL } from '../constants/tiles';
+import PlayerCharacter from '../player';
+import DungeonManager from '../managers/dungeon';
+import TurnManager from '../managers/turn';
 
 export default class InitScene extends Phaser.Scene {
   preload() {
@@ -12,25 +13,19 @@ export default class InitScene extends Phaser.Scene {
   }
 
   create() {
-    let mappedLevel = level.map((r) => r.map((t) => (t == 1 ? WALL : FLOOR)));
+    this.dungeon = new DungeonManager(this);
+    const player = new PlayerCharacter(this.dungeon, 15, 15);
 
-    const config = {
-      data: mappedLevel,
-      tileWidth: TILE_SIZE,
-      tileHeight: TILE_SIZE,
-    };
+    this.turnManager = new TurnManager();
 
-    const map = this.make.tilemap(config);
+    this.turnManager.addEntity(player);
+  }
 
-    const tileset = map.addTilesetImage(
-      'tiles',
-      'tiles',
-      TILE_SIZE,
-      TILE_SIZE,
-      0,
-      1
-    );
+  update() {
+    if (this.turnManager.over()) {
+      this.turnManager.refresh();
+    }
 
-    const ground = map.createStaticLayer(0, tileset, 0, 0);
+    this.turnManager.turn();
   }
 }
