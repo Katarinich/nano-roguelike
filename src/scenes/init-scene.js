@@ -1,7 +1,10 @@
-import { FLOOR, TILE_SIZE, WALL } from '../constants/tiles';
-import PlayerCharacter from '../player';
-import DungeonManager from '../managers/dungeon';
+import { TILE_SIZE } from '../constants/tiles';
+
+import PlayerCharacter from '../entities/player';
+import BasicMonster from '../entities/basic-monster';
+
 import TurnManager from '../managers/turn';
+import DungeonManager from '../managers/dungeon';
 
 export default class InitScene extends Phaser.Scene {
   preload() {
@@ -13,12 +16,14 @@ export default class InitScene extends Phaser.Scene {
   }
 
   create() {
-    this.dungeon = new DungeonManager(this);
-    const player = new PlayerCharacter(this.dungeon, 15, 15);
-
     this.turnManager = new TurnManager();
 
-    this.turnManager.addEntity(player);
+    this.dungeon = new DungeonManager(this, this.turnManager);
+
+    this.dungeon.player = new PlayerCharacter(this.dungeon, 15, 15);
+
+    this.turnManager.addEntity(this.dungeon.player);
+    this.turnManager.addEntity(new BasicMonster(this.dungeon, 15, 18));
   }
 
   update() {
