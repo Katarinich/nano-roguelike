@@ -18,14 +18,14 @@ export default class PlayerCharacter {
     this.dungeon.initializeEntity(this);
   }
 
+  get attack() {
+    return 1;
+  }
+
   refresh = () => {
     this.movementPoints = 1;
     this.actionPoints = 1;
   };
-
-  attack() {
-    return 1;
-  }
 
   onDestroy() {
     alert('OMG! You died!');
@@ -75,7 +75,6 @@ export default class PlayerCharacter {
 
           newX = oldX;
           newY = oldY;
-          // this.dungeon.moveEntityTo(this, newX, newY);
         }
 
         if (newX !== oldX || newY !== oldY) {

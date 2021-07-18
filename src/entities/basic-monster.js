@@ -6,15 +6,26 @@ export default class BasicMonster {
   constructor(dungeon, x, y) {
     this.dungeon = dungeon;
 
-    this.name = 'A Dangerous Monster';
     this.movementPoints = 1;
     this.actionPoints = 1;
     this.healthPoints = 5;
     this.x = x;
     this.y = y;
-    this.tile = BASIC_SKELETON;
+    this.moving = false;
 
     this.dungeon.initializeEntity(this);
+  }
+
+  get name() {
+    return 'A Dangerous Monster';
+  }
+
+  get tile() {
+    return BASIC_SKELETON;
+  }
+
+  get attack() {
+    return 2;
   }
 
   turn() {
@@ -28,7 +39,7 @@ export default class BasicMonster {
     const finder = new PF.AStarFinder();
     const path = finder.findPath(oldX, oldY, playerX, playerY, grid);
 
-    if (this.movementPoints > 0) {
+    if (this.movementPoints > 0 && !this.moving) {
       if (path.length > 2) {
         this.dungeon.moveEntityTo(this, path[1][0], path[1][1]);
       }
@@ -45,10 +56,6 @@ export default class BasicMonster {
 
       this.actionPoints -= 1;
     }
-  }
-
-  attack() {
-    return 2;
   }
 
   onDestroy() {

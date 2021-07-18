@@ -2,6 +2,7 @@ import { TILE_SIZE } from '../constants/tiles';
 
 import PlayerCharacter from '../entities/player';
 import BasicMonster from '../entities/basic-monster';
+import FastSkeleton from '../entities/fast-skeleton';
 
 import TurnManager from '../managers/turn';
 import DungeonManager from '../managers/dungeon';
@@ -24,6 +25,7 @@ export default class InitScene extends Phaser.Scene {
 
     this.turnManager.addEntity(this.dungeon.player);
     this.turnManager.addEntity(new BasicMonster(this.dungeon, 15, 18));
+    this.turnManager.addEntity(new FastSkeleton(this.dungeon, 20, 22));
   }
 
   update() {

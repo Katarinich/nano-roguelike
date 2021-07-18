@@ -119,7 +119,7 @@ export default class DungeonManager {
         attacker.moving = false;
         attacker.tweens -= 1;
 
-        let damage = attacker.attack();
+        let damage = attacker.attack;
         victim.healthPoints -= damage;
 
         console.log(
