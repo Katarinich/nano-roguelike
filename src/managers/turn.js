@@ -1,4 +1,4 @@
-export default class TurnManager {
+class TurnManager {
   constructor() {
     this.entities = new Set();
     this.currentIndex = 0;
@@ -28,3 +28,5 @@ export default class TurnManager {
 
   over = () => [...this.entities].every((e) => e.over());
 }
+
+export default new TurnManager();

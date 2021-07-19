@@ -89,6 +89,63 @@ export default class PlayerCharacter {
   };
 
   over = () => {
-    return this.movementPoints === 0 && !this.moving;
+    const isOver = this.movementPoints === 0 && !this.moving;
+
+    if (isOver && this.UIheader) {
+      this.UIheader.setColor('#cfc6b8');
+    } else {
+      this.UIheader.setColor('#fff');
+    }
+
+    if (this.UIstatsText) {
+      this.UIstatsText.setText(
+        `Hp: ${this.healthPoints}\nMp: ${this.movementPoints}\nAp: ${this.actionPoints}`
+      );
+    }
+
+    return isOver;
   };
+
+  createUI(config) {
+    const { x, y, scene } = config;
+
+    let accumulatedHeight = 0;
+
+    this.UIsprite = scene.add.sprite(x, y, 'tiles', this.tile).setOrigin(0);
+
+    this.UIheader = scene.add.text(x + 20, y, this.name, {
+      font: '16px Arial',
+      color: '#cfc6b8',
+    });
+
+    this.UIstatsText = scene.add.text(
+      x + 20,
+      y + 20,
+      `Hp: ${this.healthPoints}\nMp: ${this.movementPoints}\nAp: ${this.actionPoints}`,
+      { font: '12px Arial', fill: '#cfc6b8' }
+    );
+
+    accumulatedHeight += this.UIstatsText.height + this.UIsprite.height;
+
+    const itemsPerRow = 5;
+    const rows = 2;
+    this.UIitems = [];
+
+    for (let row = 1; row <= rows; row++) {
+      for (let cell = 1; cell <= itemsPerRow; cell++) {
+        const rx = x + 25 * cell;
+        const ry = y + 50 + 25 * row;
+
+        this.UIitems.push(
+          scene.add.rectangle(rx, ry, 20, 20, 0xcfc6b8, 0.3).setOrigin(0)
+        );
+      }
+    }
+
+    accumulatedHeight += 90;
+
+    scene.add.line(x + 5, y + 120, 0, 10, 175, 10, 0xcfc6b8).setOrigin(0);
+
+    return accumulatedHeight;
+  }
 }

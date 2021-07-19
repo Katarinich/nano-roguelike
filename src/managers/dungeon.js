@@ -3,12 +3,25 @@ import PF from 'pathfinding';
 import { FLOOR, TILE_SIZE, WALL } from '../constants/tiles';
 
 import level from '../scenes/rooms/room_1';
+import turnManager from './turn';
 
-export default class DungeonManager {
-  constructor(scene, turnManager) {
-    this.scene = scene;
+class DungeonManager {
+  constructor(turnManager) {
     this.level = level;
     this.turnManager = turnManager;
+
+    this.msgs = [];
+  }
+
+  get sprites() {
+    return {
+      floor: FLOOR,
+      wall: WALL,
+    };
+  }
+
+  initialize(scene) {
+    this.scene = scene;
 
     const levelWithTiles = level.map((r) =>
       r.map((t) => (t === 1 ? this.sprites.wall : this.sprites.floor))
@@ -34,11 +47,8 @@ export default class DungeonManager {
     this.map = map.createDynamicLayer(0, tileset, 0, 0);
   }
 
-  get sprites() {
-    return {
-      floor: FLOOR,
-      wall: WALL,
-    };
+  log(text) {
+    this.msgs = [text, ...this.msgs].slice(0, 8);
   }
 
   isWalkableTile(x, y) {
@@ -122,7 +132,7 @@ export default class DungeonManager {
         let damage = attacker.attack;
         victim.healthPoints -= damage;
 
-        console.log(
+        this.log(
           `${attacker.name} does ${damage} damage to ${victim.name} which now has ${victim.healthPoints} life left`
         );
 
@@ -146,3 +156,5 @@ export default class DungeonManager {
     entity.onDestroy();
   }
 }
+
+export default new DungeonManager(turnManager);
