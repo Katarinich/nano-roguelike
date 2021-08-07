@@ -54,7 +54,11 @@ class DungeonManager {
   isWalkableTile(x, y) {
     const entities = [...this.turnManager.entities];
 
-    if (entities.find((entity) => entity.x === x && entity.y === y)) {
+    if (
+      entities.find(
+        (entity) => entity.sprite && entity.x === x && entity.y === y
+      )
+    ) {
       return false;
     }
 
@@ -67,13 +71,32 @@ class DungeonManager {
     const entities = [...this.turnManager.entities];
 
     const resultEntity = entities.find(
-      (entity) => entity.x === x && entity.y === y
+      (entity) => entity.sprite && entity.x === x && entity.y === y
     );
 
     return resultEntity || false;
   }
 
+  removeEntity(entity) {
+    this.turnManager.entities.delete(entity);
+
+    entity.sprite.destroy();
+
+    delete entity.sprite;
+
+    entity.onDestroy();
+  }
+
+  itemPicked(entity) {
+    entity.sprite.destroy();
+    delete entity.sprite;
+  }
+
   initializeEntity(entity) {
+    if (!entity.x || !entity.y) {
+      return;
+    }
+
     const x = this.map.tileToWorldX(entity.x);
     const y = this.map.tileToWorldY(entity.y);
     entity.sprite = this.scene.add.sprite(x, y, 'tiles', entity.tile);
@@ -148,12 +171,6 @@ class DungeonManager {
       delay: attacker.tweens * 200,
       yoyo: true,
     });
-  }
-
-  removeEntity(entity) {
-    this.turnManager.entities.delete(entity);
-    entity.sprite.destroy();
-    entity.onDestroy();
   }
 }
 

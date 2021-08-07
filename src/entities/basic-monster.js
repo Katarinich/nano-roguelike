@@ -1,10 +1,15 @@
 import PF from 'pathfinding';
 
+import Gem from './gem';
+import LongSword from './long-sword';
+import Potion from './potion';
+
 import { BASIC_SKELETON } from '../constants/tiles';
 
 export default class BasicMonster {
-  constructor(dungeon, x, y) {
+  constructor(dungeon, turnManager, x, y) {
     this.dungeon = dungeon;
+    this.turnManager = turnManager;
 
     this.movementPoints = 1;
     this.actionPoints = 1;
@@ -12,6 +17,7 @@ export default class BasicMonster {
     this.x = x;
     this.y = y;
     this.moving = false;
+    this.type = 'enemy';
 
     this.dungeon.initializeEntity(this);
   }
@@ -59,9 +65,22 @@ export default class BasicMonster {
   }
 
   onDestroy() {
-    this.dungeon.log(`${this.name} was killed`);
+    this.dungeon.log(`${this.name} was killed.`);
     this.UIsprite.setAlpha(0.2);
     this.UItext.setAlpha(0.2);
+
+    // loot
+    const x = this.x;
+    const y = this.y;
+
+    const possibleLoot = [false, false, Gem, LongSword, Potion];
+
+    const lootIndex = Phaser.Math.Between(0, possibleLoot.length - 1);
+    if (possibleLoot[lootIndex]) {
+      const item = possibleLoot[lootIndex];
+      this.turnManager.addEntity(new item(this.dungeon, x, y));
+      this.dungeon.log(`${this.name} drops ${item.name}.`);
+    }
   }
 
   refresh() {
